@@ -43,7 +43,7 @@ export function TasksToolbar({
             transition={{ duration: 0.15, ease: "easeInOut" }}
             layout
           >
-            <motion.div className="relative flex-1" layout transition={{ duration: 0.2, ease: "easeInOut" }}>
+            <motion.div className="relative flex-1" layout transition={{ duration: 0.15, ease: "easeInOut" }}>
               <Input
                 value={newTitle}
                 onChange={(e) => onNewTitleChange(e.target.value)}
