@@ -19,7 +19,7 @@ export function TasksHeader({ query, onQueryChange, onClear }: TasksHeaderProps)
           <Input
             value={query}
             onChange={(e) => onQueryChange(e.target.value)}
-            placeholder="Search notes..."
+            placeholder="Search tasks..."
             className="pr-9"
           />
           <AnimatePresence initial={false}>

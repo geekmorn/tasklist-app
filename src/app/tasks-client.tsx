@@ -77,6 +77,7 @@ export default function TasksClient({ initialTasks }: { initialTasks: Task[] }) 
   const start = (current - 1) * TASK_PAGE_SIZE;
   const pageItems = filtered.slice(start, start + TASK_PAGE_SIZE);
   const hasSelectionOnPage = !pageItems.every((t) => !isDraftCompleted(t));
+  const allSelectedOnPage = pageItems.length > 0 && pageItems.every((t) => isDraftCompleted(t));
 
   function createTask() {
     const title = newTitle.trim();
@@ -184,6 +185,7 @@ export default function TasksClient({ initialTasks }: { initialTasks: Task[] }) 
             onBulkDeleteConfirm={() => setConfirmBulkOpen(true)}
             canClearOrDelete={hasSelectionOnPage}
             hasSelection={hasSelectionOnPage}
+            allSelected={allSelectedOnPage}
           />
 
           <div className="mt-4 divide-y">

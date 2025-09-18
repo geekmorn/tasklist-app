@@ -16,6 +16,7 @@ type TasksToolbarProps = {
   onBulkDeleteConfirm: () => void;
   canClearOrDelete: boolean;
   hasSelection: boolean;
+  allSelected: boolean;
 };
 
 export function TasksToolbar({
@@ -29,7 +30,13 @@ export function TasksToolbar({
   onBulkDeleteConfirm,
   canClearOrDelete,
   hasSelection,
+  allSelected,
 }: TasksToolbarProps) {
+  const animationConfig = {
+    duration: 0.2,
+    ease: "easeInOut"
+  };
+
   return (
     <div className="flex flex-col sm:flex-row gap-2 sm:items-center min-h-9">
       <AnimatePresence mode="wait" initial={false}>
@@ -37,17 +44,21 @@ export function TasksToolbar({
           <motion.div
             key="add"
             className="flex-1 flex gap-2 items-center"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.15, ease: "easeInOut" }}
+            initial={{ opacity: 0, y: -4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -4 }}
+            transition={animationConfig}
             layout
           >
-            <motion.div className="relative flex-1" layout transition={{ duration: 0.15, ease: "easeInOut" }}>
+            <motion.div 
+              className="relative flex-1" 
+              layout 
+              transition={animationConfig}
+            >
               <Input
                 value={newTitle}
                 onChange={(e) => onNewTitleChange(e.target.value)}
-                placeholder="New note"
+                placeholder="Add new task..."
                 onBeforeInput={onBeforeInputNew}
                 onPaste={onPasteNew}
                 onKeyDown={(e) => {
@@ -55,25 +66,31 @@ export function TasksToolbar({
                 }}
                 className="pr-9"
               />
-              {newTitle.trim().length > 0 && (
-                <button
-                  type="button"
-                  onClick={() => onNewTitleChange("")}
-                  aria-label="Clear new task"
-                  className="absolute right-2 top-1/2 -translate-y-1/2 inline-flex h-5 w-5 items-center justify-center rounded hover:bg-foreground/5 text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  <X className="h-4 w-4" />
-                </button>
-              )}
+              <AnimatePresence initial={false}>
+                {newTitle.trim().length > 0 && (
+                  <motion.button
+                    type="button"
+                    onClick={() => onNewTitleChange("")}
+                    aria-label="Clear new task"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 inline-flex h-5 w-5 items-center justify-center rounded hover:bg-foreground/5 text-muted-foreground hover:text-foreground transition-colors"
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    transition={animationConfig}
+                  >
+                    <X className="h-4 w-4" />
+                  </motion.button>
+                )}
+              </AnimatePresence>
             </motion.div>
             <AnimatePresence initial={false}>
               {newTitle.trim().length > 0 && (
                 <motion.div
                   key="add-btn"
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ duration: 0.2, ease: "easeInOut" }}
+                  initial={{ opacity: 0, scale: 0.9, x: -8 }}
+                  animate={{ opacity: 1, scale: 1, x: 0 }}
+                  exit={{ opacity: 0, scale: 0.9, x: -8 }}
+                  transition={animationConfig}
                   layout
                 >
                   <Button size="sm" onClick={onAdd}>
@@ -88,24 +105,45 @@ export function TasksToolbar({
           <motion.div
             key="bulk"
             className="flex gap-2"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.15, ease: "easeInOut" }}
+            initial={{ opacity: 0, y: -4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -4 }}
+            transition={animationConfig}
           >
-            <Button size="sm" variant="outline" onClick={onSelectPage} aria-label="Select page">
-              <CheckSquare />
-              <span className="hidden sm:inline">Select</span>
-            </Button>
             <Button
               size="sm"
               variant="outline"
-              onClick={onClearPage}
-              aria-label="Clear page"
-              disabled={!canClearOrDelete}
+              onClick={allSelected ? onClearPage : onSelectPage}
+              aria-label={allSelected ? "Clear page" : "Select page"}
+              disabled={allSelected ? !canClearOrDelete : false}
             >
-              <Square />
-              <span className="hidden sm:inline">Clear</span>
+              <AnimatePresence mode="wait" initial={false}>
+                {allSelected ? (
+                  <motion.span
+                    key="clear"
+                    className="inline-flex items-center gap-2"
+                    initial={{ opacity: 0, x: -6 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 6 }}
+                    transition={animationConfig}
+                  >
+                    <Square />
+                    <span className="hidden sm:inline">Clear</span>
+                  </motion.span>
+                ) : (
+                  <motion.span
+                    key="select"
+                    className="inline-flex items-center gap-2"
+                    initial={{ opacity: 0, x: -6 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 6 }}
+                    transition={animationConfig}
+                  >
+                    <CheckSquare />
+                    <span className="hidden sm:inline">Select</span>
+                  </motion.span>
+                )}
+              </AnimatePresence>
             </Button>
             <Button
               size="sm"
